@@ -20,11 +20,6 @@ namespace Infrastructure.Data
             return await _context.ArquivoExcel.ToListAsync();
         }
 
-        public async Task<ArquivoExcel> GetArquivoExcel(int id)
-        {
-            return await _context.ArquivoExcel.FindAsync(id);
-        }
-
         public async Task Insert(ArquivoExcel arquivoExcel)
         {
             await _context.ArquivoExcel.AddAsync(arquivoExcel);

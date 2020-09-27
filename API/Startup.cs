@@ -30,6 +30,13 @@ namespace API
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddDbContext<ExcelContext>(options => options.UseMySql(_configuration.GetConnectionString("DefaultConnection")));
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
+                });
+            });
 
         }
 
@@ -40,6 +47,8 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseRouting();
 

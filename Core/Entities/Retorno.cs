@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace Core.Entities
 {
+    /* Essa classe agrupa todas as informações nescessárias para tratar em qualquer front-end. */
     public class Retorno
     {
         public string StatusCode { get; set; }

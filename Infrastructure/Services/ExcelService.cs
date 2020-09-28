@@ -24,6 +24,7 @@ namespace Infrastructure.Services
             this._arquivoExcelRepository = arquivoExcelRepository;
         }
 
+        /* Verifica se é uma data válida. */
         private bool VerificaData(string data)
         {
             DateTime date;
@@ -38,6 +39,7 @@ namespace Infrastructure.Services
             }
         }
 
+        /* Verifica se é um inteiro válido. */
         private bool VerificaInteiro(string valor)
         {
             int integer;
@@ -52,6 +54,7 @@ namespace Infrastructure.Services
             }
         }
 
+        /* Verifica se é um decimal válido. */
         private bool VerificaDecimal(string valor)
         {
             Decimal dec;
@@ -66,6 +69,57 @@ namespace Infrastructure.Services
             }
         }
 
+        /* Método responsável por persistir os dados no banco de dados,
+        se não existir nenhum erro E existir linhas para serem importadas, 
+        insere no banco de dados. */
+        private async Task<Retorno> Persiste(Retorno retornoAPI, string nomeArquivo)
+        {
+            // Se nenhuma foi linha foi válida.
+            if (retornoAPI.LinhaArquivoExcel.Count <= 0)
+            {
+                retornoAPI.StatusCode = "400";
+            }
+            // Se existirem erros.
+            else
+            if (retornoAPI.ErrosArquivo.Count > 0)
+            {
+                retornoAPI.StatusCode = "400";
+            }
+            // Se deu tudo certo, persiste as informações.
+            else
+            if (retornoAPI.ErrosArquivo.Count <= 0 && retornoAPI.LinhaArquivoExcel.Count > 0)
+            {
+                retornoAPI.StatusCode = "200";
+
+                // Monta o cabeçalho
+                var arquivoExcel = new ArquivoExcel
+                {
+                    NomeArquivo = nomeArquivo,
+                    DataImportacao = DateTime.Now,
+                    QuantidadeTotalItens = retornoAPI.LinhaArquivoExcel.Count(),
+                    ValorTotalImportado = retornoAPI.LinhaArquivoExcel.Sum(x => x.ValorUnitario),
+                    MenorDataImportada = retornoAPI.LinhaArquivoExcel.Min(x => x.DataEntrega)
+                };
+
+                await _arquivoExcelRepository.Insert(arquivoExcel);
+
+                // Atualiza a referência dos itens com o cabeçalho.
+                foreach (var item in retornoAPI.LinhaArquivoExcel)
+                {
+                    item.ArquivoExcel = arquivoExcel;
+                    await _linhaArquivoExcel.Insert(item);
+                }
+
+                // Comita a transação.
+                await _unitOfWork.CompleteAsync();
+            }
+
+            return retornoAPI;
+        }
+
+        /* Método responsável pelo tratamento do arquivo excel importado,
+        nesse método é feito tanto o tratamento de integridade dos dados quanto de
+        validação de acordo com as regras definidas. */
         public async Task<Retorno> Insert(MemoryStream arquivo, string nomeArquivo)
         {
             using(var package = new ExcelPackage(arquivo))
@@ -160,46 +214,7 @@ namespace Infrastructure.Services
                     }
                 }
 
-                // Se nenhuma foi linha foi válida.
-                if (retornoAPI.LinhaArquivoExcel.Count <= 0)
-                {
-                    retornoAPI.StatusCode = "400";
-                }
-                // Se existirem erros.
-                else
-                if (retornoAPI.ErrosArquivo.Count > 0)
-                {
-                    retornoAPI.StatusCode = "400";
-                }
-                // Se deu tudo certo, persiste as informações.
-                else
-                if (retornoAPI.ErrosArquivo.Count <= 0 && retornoAPI.LinhaArquivoExcel.Count > 0)
-                {
-                    retornoAPI.StatusCode = "200";
-
-                    // Monta o cabeçalho.
-                    var arquivoExcel = new ArquivoExcel
-                    {
-                        NomeArquivo = nomeArquivo,
-                        DataImportacao = DateTime.Now,
-                        QuantidadeTotalItens = retornoAPI.LinhaArquivoExcel.Count(),
-                        ValorTotalImportado = retornoAPI.LinhaArquivoExcel.Sum(x => x.ValorUnitario),
-                        MenorDataImportada = retornoAPI.LinhaArquivoExcel.Min(x => x.DataEntrega)
-                    };
-
-                    await _arquivoExcelRepository.Insert(arquivoExcel);
-
-                    // Atualiza a referência dos itens com o cabeçalho.
-                    foreach (var item in retornoAPI.LinhaArquivoExcel)
-                    {
-                        item.ArquivoExcel = arquivoExcel;
-                        await _linhaArquivoExcel.Insert(item);
-                    }
-
-                    var test = await _unitOfWork.CompleteAsync();
-                }
-
-                return retornoAPI;
+                return await Persiste(retornoAPI, nomeArquivo);
             }
         }
 

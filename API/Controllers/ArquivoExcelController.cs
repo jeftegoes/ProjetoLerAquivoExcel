@@ -58,7 +58,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return Ok();
+                    return Ok(retorno.LinhaArquivoExcel);
                 }
             }
         }

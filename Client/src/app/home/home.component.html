@@ -4,25 +4,39 @@
   <h1 class="h5">
     Clique no botão ao lado e informe o arquivo que deseja importar.
   </h1>
-  <div class="btn-toolbar mb-2 mb-md-0">
-    <div class="btn-group mr-2">
-      <button
-        type="button"
-        class="btn btn-sm btn-primary"
-        (click)="fileInput.click()"
-      >
-        <span> Importar Arquivo .xls(x)</span>
-        <input
-          #fileInput
-          type="file"
-          accept=".xlsx, .xls"
-          (change)="onInsereArquivo($event)"
-          style="display: none"
-        />
-      </button>
+
+  <form [formGroup]="formAnexo">
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          (click)="fileInput.click()"
+        >
+          <span> Importar Arquivo .xls(x)</span>
+          <input
+            #fileInput
+            formControlName="anexo"
+            type="file"
+            accept=".xlsx, .xls"
+            (change)="onInsereArquivo($event.target.files)"
+            style="display: none"
+          />
+        </button>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
+
+<ng-container *ngIf="exibirMensagem === true">
+  <alert type="{{ tipoMensagem }}">
+    <h4 class="alert-heading">{{ titulo }}</h4>
+    <p style="white-space: pre-line">
+      {{ mensagem }}
+    </p>
+    <p class="mb-0"></p>
+  </alert>
+</ng-container>
 
 <h2>Arquivos importados</h2>
 <div class="table-responsive">
@@ -48,10 +62,10 @@
           </a>
         </td>
         <td>{{ arquivoExcel.nomeArquivo }}</td>
-        <td>{{ arquivoExcel.dataImportacao | date }}</td>
+        <td>{{ arquivoExcel.dataImportacao | date: "dd/MM/yyyy HH:mm:ss" }}</td>
         <td>{{ arquivoExcel.quantidadeTotalItens }}</td>
         <td>{{ arquivoExcel.menorDataImportada | date }}</td>
-        <td>{{ arquivoExcel.valorTotalImportado | currency }}</td>
+        <td>{{ arquivoExcel.valorTotalImportado | currency: "BRL" }}</td>
       </tr>
     </tbody>
   </table>

@@ -1,5 +1,6 @@
 namespace Core.Entities
 {
+    /* Estrutura padronizada para montar o log de erros. */
     public class ErroArquivo
     {
         public int Linha { get; set; }

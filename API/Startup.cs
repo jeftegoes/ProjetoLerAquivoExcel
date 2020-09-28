@@ -30,6 +30,7 @@ namespace API
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddDbContext<ExcelContext>(options => options.UseMySql(_configuration.GetConnectionString("DefaultConnection")));
+            
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>

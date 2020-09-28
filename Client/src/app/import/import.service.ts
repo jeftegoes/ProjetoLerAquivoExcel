@@ -14,7 +14,7 @@ export class ImportService {
 
   GetImportById(id: number): Observable<ILinhaArquivoExcel[]> {
     return this.http.get<ILinhaArquivoExcel[]>(
-      this.baseUrl + 'Api/LinhaArquivoExcel/' + id
+      this.baseUrl + 'LinhaArquivoExcel/' + id
     );
   }
 }

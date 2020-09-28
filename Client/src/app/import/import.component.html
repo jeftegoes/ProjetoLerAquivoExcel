@@ -22,10 +22,10 @@
     </thead>
     <tbody>
       <tr *ngFor="let linhaArquivoExcel of linhasArquivoExcel">
-        <td>{{ linhaArquivoExcel.dataEntrega | date }}</td>
+        <td>{{ linhaArquivoExcel.dataEntrega | date: "dd/MM/yyyy" }}</td>
         <td>{{ linhaArquivoExcel.nomeProduto }}</td>
         <td>{{ linhaArquivoExcel.quantidade }}</td>
-        <td>{{ linhaArquivoExcel.valorUnitario | currency }}</td>
+        <td>{{ linhaArquivoExcel.valorUnitario | currency: "BRL" }}</td>
       </tr>
     </tbody>
   </table>

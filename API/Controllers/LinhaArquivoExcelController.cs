@@ -9,6 +9,7 @@ namespace API.Controllers
     public class LinhaArquivoExcelController : BaseApiController
     {
         private readonly ILinhaArquivoExcelRepository _repository;
+        
         public LinhaArquivoExcelController(ILinhaArquivoExcelRepository repository)
         {
             this._repository = repository;

@@ -28,7 +28,7 @@
 
 - Repository pattern
 
-## Back-end
+## Front-end
 
 Angular 4+ (10)
 

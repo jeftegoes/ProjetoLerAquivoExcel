@@ -42,9 +42,11 @@ export class HomeComponent implements OnInit {
           'O arquivo excel foi carregado e processado com sucesso.',
           'success'
         );
+        // Se der tudo certo, redireciona o usuário para a página import/
         this.router.navigateByUrl('/import/' + retornoApi[0].idArquivoExcel);
       },
       (error) => {
+        // Monta a lista com os erros e mostra para o usuário.
         let erroFormatado = '';
 
         error.error.forEach((element) => {
@@ -69,6 +71,7 @@ export class HomeComponent implements OnInit {
     );
   }
 
+  // Busca no endpoint a informação dos arquivos excel já importados.
   CarregaArquivosExcel(): void {
     this.homeService.GetAllImports().subscribe(
       (data) => {

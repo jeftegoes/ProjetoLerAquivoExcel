@@ -64,7 +64,9 @@
         <td>{{ arquivoExcel.nomeArquivo }}</td>
         <td>{{ arquivoExcel.dataImportacao | date: "dd/MM/yyyy HH:mm:ss" }}</td>
         <td>{{ arquivoExcel.quantidadeTotalItens }}</td>
-        <td>{{ arquivoExcel.menorDataImportada | date }}</td>
+        <td>
+          {{ arquivoExcel.menorDataImportada | date: "dd/MM/yyyy" }}
+        </td>
         <td>{{ arquivoExcel.valorTotalImportado | currency: "BRL" }}</td>
       </tr>
     </tbody>

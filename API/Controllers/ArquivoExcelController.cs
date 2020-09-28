@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -50,7 +51,17 @@ namespace API.Controllers
             {
                 await arquivo.CopyToAsync(ms);
 
-                var retorno = await _service.Insert(ms, arquivo.FileName);
+                var retorno = new Retorno();
+
+                try
+                {
+                    retorno = await _service.Insert(ms, arquivo.FileName);
+                }
+                catch (Exception ex)
+                {
+                    retorno.ErrosArquivo.Add(new ErroArquivo(0, 0, "Aconteceu algum erro ao importar o arquivo excel, verifique a integridade do arquivo, erro detalhado: " + ex.Message));
+                    return BadRequest(retorno.ErrosArquivo);
+                }
 
                 if (retorno.StatusCode == "400")
                 {
